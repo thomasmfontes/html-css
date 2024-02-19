@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voa Avião</title>
+    <style>
+        body {
+            background: #333;
+        }
+
+        .luz {
+            width: 10px;
+            height: 10px;
+            background: red;
+            border-radius: 50%;
+            bottom: 295px;
+            position: absolute;
+            z-index: 20px;
+            left: 20px;
+            animation: luz 500ms ease-in-out 0s infinite alternate;
+        }
+
+        .aviao {
+            position: absolute;
+            top: 0px;
+            right: -500px;
+            opacity: .8;
+            animation: aviao 10s linear 0s infinite reverse;
+            z-index: 99;
+        }
+
+        @keyframes luz {
+            0%{opacity: 0;}
+            100%{opacity: 1;}
+        }
+
+        @keyframes aviao {
+            from{right: -500px;}
+            to{right: 102%;}
+        }
+    </style>
+</head>
+<body>
+    <div class="aviao">
+        <div class="luz"></div>
+        <img src="https://bitly.ws/3dpga" alt="Avião">
+    </div>
+</body>
+</html>
