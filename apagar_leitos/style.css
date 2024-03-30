@@ -62,7 +62,7 @@ h1 {
     }
 }
 
-button {
+.s1 {
     font-size: 28px;
     font-weight: bolder;
     background-color: red;
@@ -74,7 +74,7 @@ button {
     z-index: 1;
 }
 
-button:hover {
+.s1:hover {
     cursor: pointer;
     border: 1px solid white;
 }
