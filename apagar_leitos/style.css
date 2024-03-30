@@ -4,6 +4,12 @@ body {
     background-color: gray;
 }
 
+h1 {
+    text-align: center;
+    margin-top: 200px;
+    font-weight: bold;
+}
+
 .fundo {
     border: 1px solid black;
     width: 300px;
