@@ -6,8 +6,8 @@ body {
 
 .fundo {
     border: 1px solid black;
-    width: 500px;
-    height: 500px;
+    width: 300px;
+    height: 300px;
     position: absolute;
     top: 50%;
     left: 50%;
@@ -57,11 +57,11 @@ body {
 }
 
 button {
-    font-size: 50px;
+    font-size: 28px;
     font-weight: bolder;
     background-color: red;
-    width: 300px;
-    height: 300px;
+    width: 160px;
+    height: 160px;
     border-radius: 50%;
     border: 1px solid black;
     box-shadow: 0 0 20px black;
