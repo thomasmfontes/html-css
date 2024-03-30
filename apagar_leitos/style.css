@@ -13,7 +13,7 @@ body {
     left: 50%;
     transform: translate(-50%, -50%);
     background-color: rgb(77, 77, 77);
-    border-radius: 50%;
+    border-radius: 5%;
     display: flex;
 }
 
@@ -25,14 +25,47 @@ body {
     display: flex;
 }
 
+.centro::before, .centro::after {
+    content: '';
+    display: block;
+    position: absolute;
+    left: -60px;
+    right: -60px;
+    top: -60px;
+    bottom: -60px;
+    border-radius: 50%;
+    border: 2px solid red;
+    animation: animar 1.5s linear infinite;
+}
+
+.centro::after {
+    animation-delay: .5s;
+}
+
+@keyframes animar {
+    0% {
+        transform: scale(0.5);
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1.2);
+        opacity: 0;
+    }
+}
+
 button {
     font-size: 50px;
+    font-weight: bolder;
     background-color: red;
     width: 300px;
     height: 300px;
     border-radius: 50%;
     border: 1px solid black;
     box-shadow: 0 0 20px black;
+    z-index: 1;
 }
 
 button:hover {
