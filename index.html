@@ -1,4 +1,5 @@
 const display = document.getElementById('result');
+const expression = document.getElementById('expression');
 const buttons = document.querySelectorAll('.btn');
 
 let current = '';
@@ -6,7 +7,6 @@ let operator = '';
 let operand1 = '';
 let resetDisplay = false;
 
-// Lógica principal
 buttons.forEach(btn => {
   btn.addEventListener('click', () => handleInput(btn.value));
 });
@@ -47,6 +47,7 @@ function setOperation(op) {
   if (display.value === '') return;
   operand1 = display.value;
   operator = op;
+  expression.innerText = `${operand1} ${operator}`;
   resetDisplay = true;
 }
 
@@ -72,6 +73,7 @@ function calculate() {
     display.value = (result % 1 === 0) ? result : result.toFixed(2);
   }
 
+  expression.innerText = `${operand1} ${operator} ${operand2} =`;
   operator = '';
   operand1 = '';
   resetDisplay = true;
@@ -79,6 +81,7 @@ function calculate() {
 
 function clearDisplay() {
   display.value = '';
+  expression.innerText = '';
   current = '';
   operator = '';
   operand1 = '';
