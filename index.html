@@ -1,12 +1,9 @@
 const visor = document.getElementById('result');
 const botoes = document.querySelectorAll('.btn');
 
-let entradaAtual = '';
 let operador = '';
-let primeiroNumero = '';
 let limparVisor = false;
 
-// Adiciona evento de clique para cada botão
 botoes.forEach(botao => {
   botao.addEventListener('click', () => tratarEntrada(botao.value));
 });
@@ -38,31 +35,32 @@ function adicionarPonto() {
     visor.value = '0';
     limparVisor = false;
   }
-  // Evita ponto duplo no mesmo número
-  const ultimaParte = visor.value.split(/[\+\-x\/]/).pop();
-  if (!ultimaParte.includes('.')) {
+  const partes = visor.value.split(' ');
+  const ultimo = partes[partes.length - 1];
+  if (!ultimo.includes('.')) {
     visor.value += '.';
   }
 }
 
 function definirOperador(simbolo) {
-  if (visor.value === '') return;
-  if (operador) return; // Evita múltiplos operadores seguidos
-  primeiroNumero = visor.value;
-  operador = simbolo;
+  if (visor.value === '' || operador) return;
   visor.value += ` ${simbolo} `;
+  operador = simbolo;
   limparVisor = false;
 }
 
 function calcularResultado() {
-  if (!operador || !visor.value.includes(operador)) return;
+  if (!operador) return;
 
-  const partes = visor.value.split(` ${operador} `);
+  const partes = visor.value.split(' ');
+  if (partes.length < 3) return;
+
   const num1 = parseFloat(partes[0]);
-  const num2 = parseFloat(partes[1]);
+  const simbolo = partes[1];
+  const num2 = parseFloat(partes[2]);
 
   let resultado = 0;
-  switch (operador) {
+  switch (simbolo) {
     case '+': resultado = num1 + num2; break;
     case '-': resultado = num1 - num2; break;
     case 'x': resultado = num1 * num2; break;
@@ -70,21 +68,16 @@ function calcularResultado() {
   }
 
   visor.value = resultado === 'Erro' ? resultado : (resultado % 1 === 0 ? resultado : resultado.toFixed(2));
-
   operador = '';
-  primeiroNumero = '';
   limparVisor = true;
 }
 
 function limparTudo() {
   visor.value = '';
-  entradaAtual = '';
   operador = '';
-  primeiroNumero = '';
   limparVisor = false;
 }
 
-// Suporte para teclado
 document.addEventListener('keydown', (evento) => {
   const tecla = evento.key;
   if (!isNaN(tecla)) adicionarNumero(tecla);
