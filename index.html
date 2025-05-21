@@ -1,50 +1,97 @@
-<!DOCTYPE html>
-<html lang="en">
+const display = document.getElementById('result');
+const buttons = document.querySelectorAll('.btn');
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Calculator</title>
-  <link rel="stylesheet" href="style.css">
-</head>
+let current = '';
+let operator = '';
+let operand1 = '';
+let resetDisplay = false;
 
-<body>
-  <div class="container">
-    <div class="calculator">
-      <div class="display">
-        <input type="text" id="result" class="display-input" readonly>
-      </div>
-      <div class="buttons">
-        <button class="btn" value="+">+</button>
-        <button class="btn" value="-">-</button>
-        <button class="btn" value="x">X</button>
-        <button class="btn" value="/">÷</button>
+// Lógica principal
+buttons.forEach(btn => {
+  btn.addEventListener('click', () => handleInput(btn.value));
+});
 
-        <button class="btn" value="7">7</button>
-        <button class="btn" value="8">8</button>
-        <button class="btn" value="9">9</button>
+function handleInput(value) {
+  if (!isNaN(value)) {
+    appendNumber(value);
+  } else if (['+', '-', 'x', '/'].includes(value)) {
+    setOperation(value);
+  } else if (value === '=') {
+    calculate();
+  } else if (value === 'C') {
+    clearDisplay();
+  } else if (value === '.') {
+    appendDot();
+  }
+}
 
-        <button class="btn equal" value="=">=</button>
+function appendNumber(num) {
+  if (resetDisplay) {
+    display.value = '';
+    resetDisplay = false;
+  }
+  display.value += num;
+}
 
-        <button class="btn" value="4">4</button>
-        <button class="btn" value="5">5</button>
-        <button class="btn" value="6">6</button>
+function appendDot() {
+  if (resetDisplay) {
+    display.value = '0';
+    resetDisplay = false;
+  }
+  if (!display.value.includes('.')) {
+    display.value += '.';
+  }
+}
 
-        <button class="btn" value="1">1</button>
-        <button class="btn" value="2">2</button>
-        <button class="btn" value="3">3</button>
+function setOperation(op) {
+  if (display.value === '') return;
+  operand1 = display.value;
+  operator = op;
+  resetDisplay = true;
+}
 
-        <button class="btn" value="0">0</button>
-        <button class="btn" value=".">.</button>
-        <button class="btn" value="C" title="clear">C</button>
-      </div>
-    </div>
-    <footer>
-      <p>Gabriel Maciel RM: 562795</p>
-      <p>Matheus Molina RM: 563399</p>
-      <p>Thomas Fontes RM: 562254</p>
-    </footer>
-  </div>
-  <script src="script.js"></script>
-</body>
-</html>
+function calculate() {
+  if (!operator || resetDisplay) return;
+
+  const operand2 = display.value;
+  let result = 0;
+
+  const num1 = parseFloat(operand1);
+  const num2 = parseFloat(operand2);
+
+  switch (operator) {
+    case '+': result = num1 + num2; break;
+    case '-': result = num1 - num2; break;
+    case 'x': result = num1 * num2; break;
+    case '/': result = num2 !== 0 ? num1 / num2 : 'Erro'; break;
+  }
+
+  if (result === 'Erro') {
+    display.value = result;
+  } else {
+    display.value = (result % 1 === 0) ? result : result.toFixed(2);
+  }
+
+  operator = '';
+  operand1 = '';
+  resetDisplay = true;
+}
+
+function clearDisplay() {
+  display.value = '';
+  current = '';
+  operator = '';
+  operand1 = '';
+  resetDisplay = false;
+}
+
+// Teclado
+document.addEventListener('keydown', (e) => {
+  const key = e.key;
+  if (!isNaN(key)) appendNumber(key);
+  else if (['+', '-', '*', '/'].includes(key)) setOperation(key === '*' ? 'x' : key);
+  else if (key === 'Enter' || key === '=') calculate();
+  else if (key === '.') appendDot();
+  else if (key === 'Backspace') display.value = display.value.slice(0, -1);
+  else if (key.toLowerCase() === 'c') clearDisplay();
+});
