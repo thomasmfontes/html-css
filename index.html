@@ -1,8 +1,7 @@
 const display = document.getElementById('result');
-const expression = document.getElementById('expression');
 const buttons = document.querySelectorAll('.btn');
 
-let current = '';
+let currentInput = '';
 let operator = '';
 let operand1 = '';
 let resetDisplay = false;
@@ -38,28 +37,30 @@ function appendDot() {
     display.value = '0';
     resetDisplay = false;
   }
-  if (!display.value.includes('.')) {
+  // evita dois pontos decimais no mesmo número
+  const lastPart = display.value.split(/[\+\-x\/]/).pop();
+  if (!lastPart.includes('.')) {
     display.value += '.';
   }
 }
 
 function setOperation(op) {
   if (display.value === '') return;
+  if (operator) return; // evita repetir operação
   operand1 = display.value;
   operator = op;
-  expression.innerText = `${operand1} ${operator}`;
-  resetDisplay = true;
+  display.value += ` ${op} `;
+  resetDisplay = false;
 }
 
 function calculate() {
-  if (!operator || resetDisplay) return;
+  if (!operator || !display.value.includes(operator)) return;
 
-  const operand2 = display.value;
+  const parts = display.value.split(` ${operator} `);
+  const num1 = parseFloat(parts[0]);
+  const num2 = parseFloat(parts[1]);
+
   let result = 0;
-
-  const num1 = parseFloat(operand1);
-  const num2 = parseFloat(operand2);
-
   switch (operator) {
     case '+': result = num1 + num2; break;
     case '-': result = num1 - num2; break;
@@ -67,13 +68,9 @@ function calculate() {
     case '/': result = num2 !== 0 ? num1 / num2 : 'Erro'; break;
   }
 
-  if (result === 'Erro') {
-    display.value = result;
-  } else {
-    display.value = (result % 1 === 0) ? result : result.toFixed(2);
-  }
+  display.value = result === 'Erro' ? result : (result % 1 === 0 ? result : result.toFixed(2));
 
-  expression.innerText = `${operand1} ${operator} ${operand2} =`;
+  // Reset estado
   operator = '';
   operand1 = '';
   resetDisplay = true;
@@ -81,14 +78,12 @@ function calculate() {
 
 function clearDisplay() {
   display.value = '';
-  expression.innerText = '';
-  current = '';
+  currentInput = '';
   operator = '';
   operand1 = '';
   resetDisplay = false;
 }
 
-// Teclado
 document.addEventListener('keydown', (e) => {
   const key = e.key;
   if (!isNaN(key)) appendNumber(key);
