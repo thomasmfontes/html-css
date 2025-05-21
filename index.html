@@ -1,95 +1,96 @@
-const display = document.getElementById('result');
-const buttons = document.querySelectorAll('.btn');
+const visor = document.getElementById('result');
+const botoes = document.querySelectorAll('.btn');
 
-let currentInput = '';
-let operator = '';
-let operand1 = '';
-let resetDisplay = false;
+let entradaAtual = '';
+let operador = '';
+let primeiroNumero = '';
+let limparVisor = false;
 
-buttons.forEach(btn => {
-  btn.addEventListener('click', () => handleInput(btn.value));
+// Adiciona evento de clique para cada botão
+botoes.forEach(botao => {
+  botao.addEventListener('click', () => tratarEntrada(botao.value));
 });
 
-function handleInput(value) {
-  if (!isNaN(value)) {
-    appendNumber(value);
-  } else if (['+', '-', 'x', '/'].includes(value)) {
-    setOperation(value);
-  } else if (value === '=') {
-    calculate();
-  } else if (value === 'C') {
-    clearDisplay();
-  } else if (value === '.') {
-    appendDot();
+function tratarEntrada(valor) {
+  if (!isNaN(valor)) {
+    adicionarNumero(valor);
+  } else if (['+', '-', 'x', '/'].includes(valor)) {
+    definirOperador(valor);
+  } else if (valor === '=') {
+    calcularResultado();
+  } else if (valor === 'C') {
+    limparTudo();
+  } else if (valor === '.') {
+    adicionarPonto();
   }
 }
 
-function appendNumber(num) {
-  if (resetDisplay) {
-    display.value = '';
-    resetDisplay = false;
+function adicionarNumero(numero) {
+  if (limparVisor) {
+    visor.value = '';
+    limparVisor = false;
   }
-  display.value += num;
+  visor.value += numero;
 }
 
-function appendDot() {
-  if (resetDisplay) {
-    display.value = '0';
-    resetDisplay = false;
+function adicionarPonto() {
+  if (limparVisor) {
+    visor.value = '0';
+    limparVisor = false;
   }
-  // evita dois pontos decimais no mesmo número
-  const lastPart = display.value.split(/[\+\-x\/]/).pop();
-  if (!lastPart.includes('.')) {
-    display.value += '.';
+  // Evita ponto duplo no mesmo número
+  const ultimaParte = visor.value.split(/[\+\-x\/]/).pop();
+  if (!ultimaParte.includes('.')) {
+    visor.value += '.';
   }
 }
 
-function setOperation(op) {
-  if (display.value === '') return;
-  if (operator) return; // evita repetir operação
-  operand1 = display.value;
-  operator = op;
-  display.value += ` ${op} `;
-  resetDisplay = false;
+function definirOperador(simbolo) {
+  if (visor.value === '') return;
+  if (operador) return; // Evita múltiplos operadores seguidos
+  primeiroNumero = visor.value;
+  operador = simbolo;
+  visor.value += ` ${simbolo} `;
+  limparVisor = false;
 }
 
-function calculate() {
-  if (!operator || !display.value.includes(operator)) return;
+function calcularResultado() {
+  if (!operador || !visor.value.includes(operador)) return;
 
-  const parts = display.value.split(` ${operator} `);
-  const num1 = parseFloat(parts[0]);
-  const num2 = parseFloat(parts[1]);
+  const partes = visor.value.split(` ${operador} `);
+  const num1 = parseFloat(partes[0]);
+  const num2 = parseFloat(partes[1]);
 
-  let result = 0;
-  switch (operator) {
-    case '+': result = num1 + num2; break;
-    case '-': result = num1 - num2; break;
-    case 'x': result = num1 * num2; break;
-    case '/': result = num2 !== 0 ? num1 / num2 : 'Erro'; break;
+  let resultado = 0;
+  switch (operador) {
+    case '+': resultado = num1 + num2; break;
+    case '-': resultado = num1 - num2; break;
+    case 'x': resultado = num1 * num2; break;
+    case '/': resultado = num2 !== 0 ? num1 / num2 : 'Erro'; break;
   }
 
-  display.value = result === 'Erro' ? result : (result % 1 === 0 ? result : result.toFixed(2));
+  visor.value = resultado === 'Erro' ? resultado : (resultado % 1 === 0 ? resultado : resultado.toFixed(2));
 
-  // Reset estado
-  operator = '';
-  operand1 = '';
-  resetDisplay = true;
+  operador = '';
+  primeiroNumero = '';
+  limparVisor = true;
 }
 
-function clearDisplay() {
-  display.value = '';
-  currentInput = '';
-  operator = '';
-  operand1 = '';
-  resetDisplay = false;
+function limparTudo() {
+  visor.value = '';
+  entradaAtual = '';
+  operador = '';
+  primeiroNumero = '';
+  limparVisor = false;
 }
 
-document.addEventListener('keydown', (e) => {
-  const key = e.key;
-  if (!isNaN(key)) appendNumber(key);
-  else if (['+', '-', '*', '/'].includes(key)) setOperation(key === '*' ? 'x' : key);
-  else if (key === 'Enter' || key === '=') calculate();
-  else if (key === '.') appendDot();
-  else if (key === 'Backspace') display.value = display.value.slice(0, -1);
-  else if (key.toLowerCase() === 'c') clearDisplay();
+// Suporte para teclado
+document.addEventListener('keydown', (evento) => {
+  const tecla = evento.key;
+  if (!isNaN(tecla)) adicionarNumero(tecla);
+  else if (['+', '-', '*', '/'].includes(tecla)) definirOperador(tecla === '*' ? 'x' : tecla);
+  else if (tecla === 'Enter' || tecla === '=') calcularResultado();
+  else if (tecla === '.') adicionarPonto();
+  else if (tecla === 'Backspace') visor.value = visor.value.slice(0, -1);
+  else if (tecla.toLowerCase() === 'c') limparTudo();
 });
